@@ -1,0 +1,93 @@
+{
+  "impacted": {
+    "CVE-2015-5237": [
+      "uamp",
+      "santa-tracker",
+      "haven",
+      "mozilla-lockwise"
+    ],
+    "CVE-2015-5262": [
+      "mozilla-lockwise"
+    ],
+    "CVE-2016-1000340": [
+      "uamp",
+      "santa-tracker",
+      "corona-warn-app",
+      "mozilla-lockwise",
+      "signal"
+    ],
+    "CVE-2016-2402": [
+      "iosched"
+    ],
+    "CVE-2016-7051": [
+      "haven"
+    ],
+    "CVE-2017-1000487": [
+      "signal"
+    ],
+    "CVE-2017-13098": [
+      "duckduckgo",
+      "iosched",
+      "uamp",
+      "immuni-app",
+      "santa-tracker",
+      "corona-warn-app",
+      "haven",
+      "freeotp",
+      "mozilla-lockwise",
+      "plaid",
+      "signal",
+      "sunflower"
+    ],
+    "CVE-2017-7957": [
+      "santa-tracker",
+      "signal"
+    ],
+    "CVE-2018-1000613": [
+      "haven"
+    ],
+    "CVE-2018-10237": [
+      "sunflower"
+    ],
+    "CVE-2018-11771": [
+      "iosched"
+    ],
+    "CVE-2018-1324": [
+      "duckduckgo",
+      "uamp",
+      "immuni-app",
+      "santa-tracker",
+      "corona-warn-app",
+      "haven",
+      "freeotp",
+      "mozilla-lockwise",
+      "plaid",
+      "signal",
+      "sunflower"
+    ],
+    "CVE-2018-20200": [
+      "iosched",
+      "immuni-app",
+      "santa-tracker",
+      "haven",
+      "mozilla-lockwise",
+      "plaid"
+    ],
+    "CVE-2018-7489": [
+      "haven"
+    ],
+    "CVE-2019-17531": [
+      "signal"
+    ]
+  },
+  "not_impacted": [
+    "kickstarter",
+    "wikipedia",
+    "termux",
+    "wordpress",
+    "protonmail",
+    "k9mail",
+    "wireguard",
+    "connectbot"
+  ]
+}
