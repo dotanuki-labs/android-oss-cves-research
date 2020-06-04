@@ -1,0 +1,26 @@
+.pytest_cache
+*egg-info
+dist
+.DS_STORE
+__pycache__
+
+# Collected projects
+plaid
+uamp
+iosched
+sunflower
+k9mail
+proton-mail-android
+duckduckgo
+signal
+corona-warn-app
+immuni-app
+freeotp
+haven
+mozilla-lockwise
+wireguard
+termux
+connectbot
+kickstarter
+wordpress
+wikipedia
