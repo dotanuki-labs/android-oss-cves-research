@@ -15,13 +15,7 @@ function scan() {
 	cd ..
 }
 
-function cleanup() {
-	for file in */ ; do rm -rf "$file"; done
-}
-
 # commits@HEAD collected at June 4th / 2020
-
-cleanup
 
 # Demos from Google
 scan 'google/santa-tracker-android' 'santa-tracker' 'bac925e399877e268e9faff0c3131befcc70f2e8'
