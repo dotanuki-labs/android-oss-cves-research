@@ -24,9 +24,10 @@ scan 'android/uamp' 'uamp' '25ff0f3162907ce308246c34319c365746392665'
 scan 'google/iosched' 'iosched' '4054aa3f8934b8b1208d5823fdbf531a8eb367af'
 scan 'android/sunflower' 'sunflower' 'a4a7cd385f4268680ba1b7f02b162395dc967cf9'
 
-# Mail clients
+# Mail / messaging
 scan 'k9mail/k-9' 'k9mail' '46747bf1140946d0e8804f2bf054e5a6a4931cea'
 scan 'Protonmail/proton-mail-android' 'protonmail' '38e2ebf4404d16b0822b73873be3f74a575f7aba'
+scan 'wireapp/wire-android' 'wire' '3b9bda898ab77f38bf3ef06435fbe98e25d3f9e7'
 
 # Privacy related
 scan 'duckduckgo/Android' 'duckduckgo' '03c57e9a21c6071bd0c2ab4b7b19a44cbe6c28ba'
