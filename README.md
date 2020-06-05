@@ -1,7 +1,7 @@
 # OSS Android apps and insecure dependencies
 
 
-An experiment intended to demonstrate the value you can get from [gradle-bodyguard](https://github.com/dotanuki-labs/gradle-bodyguard). Also, a small and independent security study about Android open-source products, by a curious Software Engineer.
+An experiment intended to demonstrate the value you can get from [gradle-bodyguard](https://github.com/dotanuki-labs/gradle-bodyguard). Also, a small and independent security study about Android open-source apps, by a curious Software Engineer.
 
 
 ## Goals
@@ -28,7 +28,7 @@ For us, **vulnerability** will mean a security issue or bug tracked as a [Commom
 
 There are several databases that index CVEs out there. In this demo, our reference will be the one offered by **National Institute of Standards and Technologies** of United States, also know as [NIST](https://nvd.nist.gov/). 
 
-Using `gradle-bodyguard`, we will demonstrate that several dependencies that actually are part used by the aforementioned projects actually have security issues tracked by CVEs. Then, we will evaluate CVEs that actually are meanigful to our context, and figure out which of them actually might be harming users in production.
+Using `gradle-bodyguard`, we will demonstrate that several dependencies that actually are used by the aforementioned projects actually have security issues tracked by CVEs. Then, we will evaluate CVEs that actually are meanigful to our context, and figure out which of them actually might be harming users in production.
 
 ## Getting Started
 
@@ -54,13 +54,13 @@ When it is done, we can aggregate the results into a JSON report with `aggregato
 which writes the `aggregated-results.json` file at our **android-oss-cves-research** folder.
 
 
-After that we are ready to interpret the results. The criteria here is : we want to figure out if some vulnerable dependency 
+After that we are ready to interpret the results. The criteria here is quite simple : we want to figure out if some vulnerable dependency harms user in the end, ie it :
 
-- Opens security breaches at network level of the Android app
-- Fails at cryptography operations
-- Messes with data manipulation
-- Allow remote code execution
-- Exploits runtime corruptions
+- opens security breaches at network level of the Android app
+- fails at cryptography operations
+- messes with user's privacy
+- allows remote code execution
+- allows *runtime* corruptions
 - etc
 
 
@@ -68,9 +68,9 @@ After that we are ready to interpret the results. The criteria here is : we want
 
 From the `aggregated-results.json` file we got a complete list of CVEs found accross all the 13 OSS projects. All the heavy work was actually done by `gradle-bodyguard`, since it exercised the Gradle build of all projects we want to examine and evaluated which dependencies - direct or transitive ones - eventually contain issues tracked by CVEs. 
 
-The first thing we need to realize is that not all CVEs we found actually represent the vulnerabilities that actually we are insterested. We need to go through them, learn about what they mean and figure out if this is actually something applicable to a Mobile application. 
+The first thing we need to realize is that not all CVEs we found actually represent the vulnerabilities that we are insterested in. We need to go through them, learn about what they mean and figure out if this is actually something applicable to a Mobile application. 
 
-Supported by the NIST website, we can realize that the following CVEs can be ignored at all, since the security flaws are out of the scope of Mobile apps 
+Supported by the [NIST](https://nvd.nist.gov/) website, we can realize that the following CVEs can be ignored, since the security flaws are out of the scope of Mobile apps 
 
 Discarded            | Rationale 
 ----------------     | -----------------------------------  
@@ -82,10 +82,10 @@ Discarded            | Rationale
 **CVE-2017-7957**    | xStream crash when parsing bad XML. Nothing more.
 **CVE-2018-10237**   | GWT related and therefore only meanigful for server apps
 **CVE-2018-1324**    | DDoS attack == servers
-**CVE-2018-20200**   | Disputed by OkHttp authors (I actually agree with them here)
+**CVE-2018-20200**   | Disputed by OkHttp authors (and I actually agree with them)
 **CVE-2019-17531**   | Needs **apache-log4j-extra** in the classpath to work. Unlike on Android apps 
 
-With this decision, now we reduced the scope of potential vulnerabilities to investigate to 3 dependencies, tracked by 4 CVEs. We can aggregate the remaining ones in the following table 
+With this decision, now we reduced the scope of potential vulnerabilities to investigate to **3 dependencies**, tracked by 4 CVEs. We can aggregate the remaining ones in the following table 
 
 OSS App              | Found | Relevant CVEs
 -------------------  | ----- | -----------------------------------------------
@@ -104,7 +104,7 @@ OSS App              | Found | Relevant CVEs
 **wireguard**        | 3     | **CVE-2017-13098**
 
 
-The next step is dig into them, one by one, inspecting the Gradle projects. But first, a quick overview about what we are facing here:
+The next step is dig into them, one by one, inspecting the Gradle projects. But first, a quick overview about what such vulnerabilities represent.
 
 
 #### [CVE-2016-2402](https://nvd.nist.gov/vuln/detail/CVE-2016-2402) (OkHttp)
@@ -250,17 +250,18 @@ So, here we have another example of compromised dependency chain. Unless Proguar
 
 ## Conclusions
 
-When using `gradle-bodyguard` for the first time, one might get the impression that his/hers Gradle project is actually totally broken from the security perspective; this study demonstrates that we can go a bit easier on that, since a deep analysis over the overall vulnerabilities is needed and since the right criteria id needed to figure out if we were pawned (or not).
+When using `gradle-bodyguard` for the first time, one might get the impression that his/hers Gradle project is actually totally broken from the security perspective; this study demonstrates that we can go a bit easier on that, since a deep analysis over the overall vulnerabilities is needed and since the right criteria is needed in order to realize if we were pawned (or not).
 
 [Supply chain attacks](https://arstechnica.com/information-technology/2020/04/725-bitcoin-stealing-apps-snuck-into-ruby-repository/) are a thing, and as exposed in the motivations of **Gradle Bodyguard**, we should have better - and free ways - to learn about then. 
 
-As Software Engineers, we usually run checkers for code style in our Continous Integration workflows and pipelines; but let's speak the truth here : *bad* code style and *good* style mean the same thing to final users, unlike good security and bad security.
+As Software Engineers, we usually run checkers for code style in our Continous Integration workflows and pipelines; but let's speak the truth here : *bad* code style and *good* style mean the same thing to final users, unlike **good security** and **bad security**. We will never see a business bankrupt due to warnings from Linters, but we might see that due to serious security breaches.
 
-So, if we could learn at CI time if we just introduced a new vulnerability in our Gradle build, even though if vulnerability eventually can be ignored after a proper analysis, then why not? 
+We can do the best effort regarding the libraries we own inside our projects; but the work to validate the entire dependencies chain from a security standpoint has to be automated somehow. This is reason why I wrote **Gradle Bodyguard** for my Android and JVM projects. 
 
-This is reason why I wrote Gradle Bodyguard for my Android and JVM projects.
+For sure it is not perfect, but at least we have something in place.🙂
 
-I'm not a Security Engineer, neither a Security Researcher. Maybe I made mistakes on my analysis; if so, please, let me know about them and learn from them. Feel free to reach me out.
+
+I'm not a Security Engineer, neither a Security Researcher. Maybe I made mistakes on my security analysis; if so, please let me know about and learn from them. Feel free to reach me out.
 
 
 ## Show your love
@@ -269,7 +270,6 @@ I'm not a Security Engineer, neither a Security Researcher. Maybe I made mistake
 
 - Did you enjoy this article? Honor me with your star ⭐️
 
-Thanks for reading!
 
 ## Author
 
