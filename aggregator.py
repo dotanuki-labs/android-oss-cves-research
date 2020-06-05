@@ -1,4 +1,4 @@
-# crunch-results.py
+# aggregator.py
 
 import json
 import os
@@ -15,8 +15,6 @@ def main():
             'uamp': [],
             'iosched': [],
             'sunflower': [],
-            'k9mail': [],
-            'proton-mail-android': [],
             'duckduckgo': [],
             'signal': [],
             'corona-warn-app': [],
@@ -24,13 +22,7 @@ def main():
             'freeotp': [],
             'haven': [],
             'mozilla-lockwise': [],
-            'wireguard': [],
-            'termux': [],
-            'connectbot': [],
-            'kickstarter': [],
-            'wordpress': [],
-            'wikipedia': [],
-            'wire': [],
+            'wireguard': []
         },
         'cves': []
     }
