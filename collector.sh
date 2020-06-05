@@ -25,7 +25,6 @@ scan 'google/iosched' 'iosched' '4054aa3f8934b8b1208d5823fdbf531a8eb367af'
 scan 'android/sunflower' 'sunflower' 'a4a7cd385f4268680ba1b7f02b162395dc967cf9'
 
 # Mail / messaging
-scan 'k9mail/k-9' 'k9mail' '46747bf1140946d0e8804f2bf054e5a6a4931cea'
 scan 'Protonmail/proton-mail-android' 'protonmail' '38e2ebf4404d16b0822b73873be3f74a575f7aba'
 scan 'wireapp/wire-android' 'wire' '3b9bda898ab77f38bf3ef06435fbe98e25d3f9e7'
 
@@ -42,14 +41,5 @@ scan 'freeotp/freeotp-android' 'freeotp' 'eb2f12f33a38235433fd83e0ad3eb15affae87
 scan 'guardianproject/haven' 'haven' '8b8a7d26bc47c3c62a185da82247f8d32e081d6f'
 scan 'mozilla-lockwise/lockwise-android' 'mozilla-lockwise' '436557c6c56303b251628c4620f7cc3486a38624'
 scan 'WireGuard/wireguard-android' 'wireguard' 'd60efcd7c7acfae583cdb0349dc2ab5ce4ae3824'
-
-# Tools
-scan 'termux/termux-app' 'termux' 'b6d7831646bb0ea0223946fdac2f5943610e8118'
-scan 'connectbot/connectbot' 'connectbot' '512d1d1bc1d96885f179fde38c54e9ed0c9e253b'
-
-# Misc
-scan 'kickstarter/android-oss' 'kickstarter' '759904dd9e14928be84fad01b291d126f52bfed7'
-scan 'wordpress-mobile/WordPress-Android' 'wordpress' 'dc41909f75cde15273d366494135ffb918e9a5d1'
-scan 'wikimedia/apps-android-wikipedia' 'wikipedia' '8753a053d2ffa22ecf8cff400e1e283e71ff8164'
 
 echo "\nDone. Collected CVEs from all projects.\n"
