@@ -57,9 +57,12 @@ Now, we are ready to interpret the results. The criteria here is : we want to fi
 - Exploits runtime corruptions
 - etc
 
+
 ## Filtering meaningful CVEs
 
-From the `aggregated-results.json` file, we have a complete list of CVEs found. The first thing we need to realize is that not all CVEs we find there describe vulnerabilities that actually we are looking for. We need to go through them, learn about the impact and figure out if this is actually applicable to a Mobile application. 
+From the `aggregated-results.json` file, we got a complete list of CVEs found. The first thing we need to realize is that not all CVEs we found actually represent the vulnerabilities that actually we are looking for. 
+
+We need to go through them, learn about what they mean and figure out if this is actually something applicable to a Mobile application. 
 
 After go the NIST website, I realized that the following CVEs don't matter can be ignored at all 
 
@@ -76,7 +79,26 @@ Discarded            | Rationale
 **CVE-2018-20200**   | Disputed by OkHttp authors (I actually agree with them here)
 **CVE-2019-17531**   | Needs **apache-log4j-extra** in the classpath to work. Unlike on Android apps 
 
-This insight reduces the scope of potential vulnerabilities to 3 dependencies and 4 CVEs. Now I can dig into them, one by one. But first, a quick overview about what we are facing :
+This insight reduces the scope of potential vulnerabilities to 3 dependencies and 4 CVEs. I can aggregate them in the following table 
+
+OSS App              | Found | Relevant CVEs
+-------------------  | ----- | -----------------------------------------------
+**santa-tracker**    | 8     | **CVE-2017-13098**
+**haven**            | 8     | **CVE-2017-13098**, **CVE-2018-1000613**, **CVE-2018-7489**
+**mozilla-lockwise** | 8     | **CVE-2017-13098**,
+**signal**           | 7     | **CVE-2017-13098**
+**uamp**             | 6     | **CVE-2017-13098**
+**iosched**          | 5     | **CVE-2017-13098**, **CVE-2016-2402** 
+**corona-warn-app**  | 5     | **CVE-2017-13098**
+**plaid**            | 4     | **CVE-2017-13098**
+**immuni-app**       | 4     | **CVE-2017-13098**
+**sunflower**        | 3     | **CVE-2017-13098**
+**duckduckgo**       | 3     | **CVE-2017-13098**
+**freeotp**          | 3     | **CVE-2017-13098**
+**wireguard**        | 3     | **CVE-2017-13098**
+
+
+The next step it dig into them, one by one. But first, a quick overview about what we are facing with such CVEs:
 
 
 #### [CVE-2016-2402](https://nvd.nist.gov/vuln/detail/CVE-2016-2402) (OkHttp)
