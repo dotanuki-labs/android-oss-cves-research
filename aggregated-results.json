@@ -16,7 +16,6 @@
     "CVE-2019-17531"
   ],
   "projects": {
-    "connectbot": [],
     "corona-warn-app": [
       "CVE-2018-10237",
       "CVE-2018-1324",
@@ -57,8 +56,6 @@
       "CVE-2018-1324",
       "CVE-2017-13098"
     ],
-    "k9mail": [],
-    "kickstarter": [],
     "mozilla-lockwise": [
       "CVE-2018-10237",
       "CVE-2015-5237",
@@ -75,7 +72,6 @@
       "CVE-2018-1324",
       "CVE-2017-13098"
     ],
-    "proton-mail-android": [],
     "santa-tracker": [
       "CVE-2018-10237",
       "CVE-2015-5237",
@@ -100,7 +96,6 @@
       "CVE-2018-1324",
       "CVE-2017-13098"
     ],
-    "termux": [],
     "uamp": [
       "CVE-2018-10237",
       "CVE-2015-5237",
@@ -109,13 +104,10 @@
       "CVE-2017-13098",
       "CVE-2017-1000487"
     ],
-    "wikipedia": [],
-    "wire": [],
     "wireguard": [
       "CVE-2018-10237",
       "CVE-2018-1324",
       "CVE-2017-13098"
-    ],
-    "wordpress": []
+    ]
   }
 }
