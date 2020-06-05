@@ -5,12 +5,14 @@ dist
 __pycache__
 
 # Collected projects
+santa-tracker
 plaid
 uamp
 iosched
 sunflower
 k9mail
-proton-mail-android
+protonmail
+wire
 duckduckgo
 signal
 corona-warn-app
@@ -24,3 +26,4 @@ connectbot
 kickstarter
 wordpress
 wikipedia
+
