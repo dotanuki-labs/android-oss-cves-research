@@ -4,7 +4,14 @@ An independent study by a curious Software Engineer.
 
 ## What is this?
 
+I did a small experiment I always wanted: I'm interested into learn if I can have insights about security issues in my project's dependencies chain in an more automated way, ie, if I have a way to be warned abouth security issues originated by dependencies that actually my build does not own.
+
+In order to experiment around that, I chose 13 open-source Android apps - from several players in the industry - and I want to know if they are eventually consuming vulnerable artifacts as part of the Gradle build; or worse than that, if they are shipping code assured to be vulnerable and unpatched to users.
+
+
 ## Methodology
+
+I picked up the following project as targets of my experiment
 
 - [santa-tracker](https://github.com/google/santa-tracker-android), a Christmas game for kids (**Google**)
 - [plaid](https://github.com/android/plaid), a showcase for Material Design (**Google**)
@@ -21,68 +28,42 @@ An independent study by a curious Software Engineer.
 - [wireguard](https://github.com/WireGuard/wireguard-android), official client for a new VPN cabalities provided by Linux kernel (**Jason Donenfeld**)
 
 
-## Generating the results (DIY)
 
-Ensure you have Python 3.8+ in your machine and install [Gradle Bodyguard](https://github.com/dotanuki-labs/gradle-bodyguard)
+Then, I just install install [Gradle Bodyguard](https://github.com/dotanuki-labs/gradle-bodyguard), the tool I created specially to tackle this task!
 
 ```bash
 → pip install gradle-bodyguard
 ```
 
-Clone this project and run the collector script
+After that, I can run the collector script. Since will fetch all the 13 projects and execute `gradle-bodyguard` against them it might take a while ... 😴
 
 ```
-→ git clone git@github.com:dotanuki-labs/android-oss-cves-research.git
 → cd android-oss-cves-research
-```
-
-Run the collector script. It will fetch all the 21 projects and execute `gradle-bodyguard` against them. Note : it might take a while ...😴
-
-```
 → ./collector.sh
-``` 
+```
 
-Aggregate the results into a JSON file:
+When it is done, we can aggregate the results into a JSON file:
 
 ```
 → python aggregator.py
 ```
 
+Now, we are ready to interpret the results. The criteria here is : we want to figure out if some vulnerable dependency 
 
+- Opens security breaches at network level
+- Fails at cryptography operations
+- Messes with data manipulation
+- Allow remote code execution
+- Exploits runtime corruptions
+- etc
 
 ## Filtering meaningful CVEs
 
-From the `aggregated-results.json` file, we have a complete list of CVEs found. Let's go briefly through the meangiful ones :
+From the `aggregated-results.json` file, we have a complete list of CVEs found. The first thing we need to realize is that not all CVEs we find there describe vulnerabilities that actually we are looking for. We need to go through them, learn about the impact and figure out if this is actually applicable to a Mobile application. 
 
+After go the NIST website, I realized that the following CVEs don't matter can be ignored at all 
 
-#### [CVE-2016-2402](https://nvd.nist.gov/vuln/detail/CVE-2016-2402) (OkHttp)
-
-> OkHttp before 2.7.4 and 3.x before 3.1.2 allows man-in-the-middle attackers to bypass certificate pinning by sending a certificate chain with a certificate from a non-pinned trusted CA and the pinned certificate.
-
-Well ... This one looks quite bad. You can read more on Jesse Wilson's related [blog post](https://publicobject.com/2016/02/11/okhttp-certificate-pinning-vulnerability/). If the app ships with this code, then user's data might be easily compromised with trivial network attacks.
-
-#### [CVE-2017-13098](https://nvd.nist.gov/vuln/detail/CVE-2017-13098) (BouncyCastle)
-
-> BouncyCastle TLS prior to version 1.0.3, when configured to use the JCE (Java Cryptography Extension) for cryptographic functions, provides a weak Bleichenbacher oracle when any TLS cipher suite using RSA key exchange is negotiated. An attacker can recover the private key from a vulnerable application."
-
-Well ... This one looks quite bad. You can read more on Jesse Wilson's related [blog post](https://publicobject.com/2016/02/11/okhttp-certificate-pinning-vulnerability/)
-
-#### [CVE-2018-1000613](https://nvd.nist.gov/vuln/detail/CVE-2018-1000613) (BouncyCastle)
-
-> A handcrafted private key can include references to unexpected classes which will be picked up from the class path for the executing application. This vulnerability appears to have been fixed in 1.60 and later.
-
-Well ... 
-
-
-#### [CVE-2018-7489](https://nvd.nist.gov/vuln/detail/CVE-2018-7489) (FasterXML Jackson)
-
-> FasterXML jackson-databind before 2.7.9.3, 2.8.x before 2.8.11.1 and 2.9.x before 2.9.5 allows unauthenticated remote code execution because of an incomplete fix for the CVE-2017-7525 deserialization flaw. This is exploitable by sending maliciously crafted JSON input to the readValue method of the ObjectMapper.
-
-Well ... 
-
-#### Why was the other CVEs not considered critical at all in our context?
-
-Discarded            | Rational 
+Discarded            | Rationale 
 ----------------     | -----------------------------------  
 **CVE-2015-5262**    | DDoS attack == servers
 **CVE-2015-5237**    | Serialization of gigantic protobuf payloads (4Gb) is unlikely on Mobile
@@ -95,40 +76,54 @@ Discarded            | Rational
 **CVE-2018-20200**   | Disputed by OkHttp authors (I actually agree with them here)
 **CVE-2019-17531**   | Needs **apache-log4j-extra** in the classpath to work. Unlike on Android apps 
 
-
-## Asserting supply-chain attacks
-
-Also from `aggregated-results.json` we can compute the number of CVEs found either with declared dependencies or transitive ones used per project, filtering the meanigful ones based in the aforementioned analysis of relevance .
+This insight reduces the scope of potential vulnerabilities to 3 dependencies and 4 CVEs. Now I can dig into them, one by one. But first, a quick overview about what we are facing :
 
 
-OSS App              | Found | Relevant CVEs
--------------------  | ----- | -----------------------------------------------
-**santa-tracker**    | 8     | **CVE-2017-13098**
-**haven**            | 8     | **CVE-2017-13098**, **CVE-2018-1000613**, **CVE-2018-7489**
-**mozilla-lockwise** | 8     | **CVE-2017-13098**,
-**signal**           | 7     | **CVE-2017-13098**
-**uamp**             | 6     | **CVE-2017-13098**
-**iosched**          | 5     | **CVE-2017-13098**, **CVE-2016-2402** 
-**corona-warn-app**  | 5     | **CVE-2017-13098**
-**plaid**            | 4     | **CVE-2017-13098**
-**immuni-app**       | 4     | **CVE-2017-13098**
-**sunflower**        | 3     | **CVE-2017-13098**
-**duckduckgo**       | 3     | **CVE-2017-13098**
-**freeotp**          | 3     | **CVE-2017-13098**
-**wireguard**        | 3     | **CVE-2017-13098**
+#### [CVE-2016-2402](https://nvd.nist.gov/vuln/detail/CVE-2016-2402) (OkHttp)
+
+> OkHttp before 2.7.4 and 3.x before 3.1.2 allows man-in-the-middle attackers to bypass certificate pinning by sending a certificate chain with a certificate from a non-pinned trusted CA and the pinned certificate.
+
+Well ... This one looks quite bad. You can read more at Jesse Wilson's related [blog post](https://publicobject.com/2016/02/11/okhttp-certificate-pinning-vulnerability/). If the app ships with this code, then user's data can be easily compromised with trivial network attacks.
+
+#### [CVE-2017-13098](https://nvd.nist.gov/vuln/detail/CVE-2017-13098) (BouncyCastle)
+
+> BouncyCastle TLS prior to version 1.0.3, when configured to use the JCE (Java Cryptography Extension) for cryptographic functions, provides a weak Bleichenbacher oracle when any TLS cipher suite using RSA key exchange is negotiated. An attacker can recover the private key from a vulnerable application."
+
+The last statement *"recover the private key"* is enough to realise that such CVE can actually impact badly an application and its users. We don't have an idea on how client code will leverage BouncyCastle to generate keys, but if they are recoverable, most likely we are just doomed.
+
+#### [CVE-2018-1000613](https://nvd.nist.gov/vuln/detail/CVE-2018-1000613) (BouncyCastle)
+
+> A handcrafted private key can include references to unexpected classes which will be picked up from the class path for the executing application. This vulnerability appears to have been fixed in 1.60 and later.
+
+Another issue around private keys generated with BouncyCastle, fair enough to consider this as critical as well.
+
+#### [CVE-2018-7489](https://nvd.nist.gov/vuln/detail/CVE-2018-7489) (FasterXML Jackson)
+
+> FasterXML jackson-databind before 2.7.9.3, 2.8.x before 2.8.11.1 and 2.9.x before 2.9.5 allows unauthenticated remote code execution because of an incomplete fix for the CVE-2017-7525 deserialization flaw. This is exploitable by sending maliciously crafted JSON input to the readValue method of the ObjectMapper.
+
+Remote code execution is definetely something we can't ignore.
 
 
+## Asserting vulnerabilities
+
+Now that we know which dependencies we are looking for, we can use Gradle tasks in order to learn about the project dependencies structure :
+
+```
+./gradlew <module>:depenedencies
+```
+
+So, let's check the versions for each vulnerable dependency and figure out if they are transitive or not.
 
 ### 🔥 Hunting OkHttp < 3.1.2 (CVE-2016-2402)
 
-Only applicable for IOSched, [it is explicitely declared](https://github.com/google/iosched/blob/4054aa3f8934b8b1208d5823fdbf531a8eb367af/build.gradle#L77) by app developers. Note that this CVE is from 2016, while the latest release of IOSched dates from 2019 (circa one year ago) 😞. 
+Our target here is IOSched, and it is easy to see that the vulnerable version OkHttp was [explicitely declared](https://github.com/google/iosched/blob/4054aa3f8934b8b1208d5823fdbf531a8eb367af/build.gradle#L77) by app developers in the build. Note that this CVE is from 2016, while the latest release of IOSched dates from 2019 (circa one year ago) 😞. 
 
-Unfortunately here, users might be exposed here.
+Unfortunately here, users might be exposed here due to developers mistake.
 
 
 ### 🔥 Hunting BouncyCastle < 1.59 (CVE-2017-13098)
 
-Seems that this version of BouncyCastle is brought to the build by the Android Gradle Plugin as parting of the tooling. Here an evidence of it being brought transitively by `com.android.tools:sdk-common`
+Seems that this version of BouncyCastle is brought to the build by the Android Gradle Plugin as parting of the tooling. Here an evidence of it being brought transitively by `com.android.tools:sdk-common`, that I found when inspecting `plaid` project
 
 ```
 
@@ -180,10 +175,10 @@ To be honest, this was quite expected, since the CVE apperead in all reports gen
 
 ### 🔥 Hunting BouncyCastle < 1.60 (CVE-2018-1000613)
 
-In this, I've manage to search **haven** project's history to figure out how this dependency is consumed. I learned the it is also present in `releaseCompileClasspath` configure - which is actually bad since it ships to users.
+In this case,`haven` project is our target and I've managed to learn that BouncyCastle is present in `releaseCompileClasspath` configurations - which is actually bad since it will ship to final users.
 
 
-The issue happens because `com.github.turasa:signal-service-java` brings a vulnerable version of BouncyCastle transitively at version `2.7.5_unofficial_1`.
+Digging more into the problem, we can see that the issue happens because `com.github.turasa:signal-service-java` dependency brings a vulnerable version of BouncyCastle transitively at version `2.7.5_unofficial_1`.
 
 ```
 .        
@@ -201,11 +196,13 @@ The issue happens because `com.github.turasa:signal-service-java` brings a vulne
 .
 ```
 
+**This is exactly one clear example of supply chain security issue!**
+
 So, unless Proguard is removing the vulnerable code somehow, users might be exposed.
 
 ### 🔥 Hunting Jackson Databind < 2.7.9.3  (CVE-2018-7489)
 
-The issue also happens only at **haven** and again because `com.github.turasa:signal-service-java` brings a vulnerable version of Jackson DataBind transitively at version `2.7.5_unofficial_1`.
+Last, but not least, the target here is `haven` project and again `com.github.turasa:signal-service-java` brings a vulnerable dependency to the chain, this time a version of Jackson DataBind grabbed transitively by `2.7.5_unofficial_1` version
 
 ```
 .    .    
@@ -221,9 +218,12 @@ The issue also happens only at **haven** and again because `com.github.turasa:si
 .    .    .
 ```
 
-So, unless Proguard is removing the vulnerable code somehow, users might be exposed again via other attack vector.
+So, here we have another example of compromised dependency chain. Unless Proguard is removing the vulnerable code somehow, users might be exposed again via other attack vector.
 
 ## Conclusions
+
+
+## Further work
 
 
 ## Show your love
